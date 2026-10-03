@@ -1,0 +1,47 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function hasAppCheck() {
+      return request.appCheck != null;
+    }
+    
+    // Syllabus PDFs - user can upload their own
+    match /syllabi/{userId}/{allPaths=**} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && hasAppCheck();
+    }
+    
+    // Profile images - user can upload their own
+    match /profiles/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId) && hasAppCheck();
+    }
+    
+    // Course thumbnails - server only
+    match /courses/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Lesson thumbnails - server only
+    match /lessons/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Project assets - user can upload their own project files
+    match /projects/{userId}/{allPaths=**} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && hasAppCheck();
+    }
+  }
+}

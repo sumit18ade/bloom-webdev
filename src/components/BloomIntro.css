@@ -1,0 +1,377 @@
+/* ==========================================================================
+   BLOOM — PREMIUM BRAND INTRO / LOADING EXPERIENCE
+   ========================================================================== */
+
+.bloom-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  /* Light mode warm ivory surface with soft radial electric blue ambient core */
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(37, 99, 235, 0.08) 0%,
+      rgba(34, 211, 238, 0.03) 35%,
+      transparent 65%
+    ),
+    #fafaf7;
+
+  isolation: isolate;
+  cursor: pointer;
+  user-select: none;
+
+  animation: introIn 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.bloom-intro--dark {
+  /* Dark mode deep near-black neutral with cyan/indigo radial glow */
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(34, 211, 238, 0.12) 0%,
+      rgba(99, 102, 241, 0.06) 40%,
+      transparent 70%
+    ),
+    #070a12;
+}
+
+/* Central Bloom Mark Wrapper */
+.bloom-mark-container {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bloom-mark {
+  position: relative;
+  z-index: 25;
+  width: clamp(96px, 12vw, 150px);
+  aspect-ratio: 1;
+
+  filter: drop-shadow(0 20px 45px rgba(37, 99, 235, 0.18));
+
+  animation:
+    logoArrival 750ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    logoLockPulse 2600ms 450ms cubic-bezier(0.16, 1, 0.3, 1) infinite alternate;
+}
+
+.bloom-intro--dark .bloom-mark {
+  filter: drop-shadow(0 20px 50px rgba(34, 211, 238, 0.28));
+}
+
+.bloom-logo-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Individual SVG Petal Animations */
+.petal {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-duration: 2900ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.petal-top {
+  animation-name: petalTopBloom;
+}
+
+.petal-left {
+  animation-name: petalLeftBloom;
+}
+
+.petal-right {
+  animation-name: petalRightBloom;
+}
+
+.petal-center {
+  animation-name: petalCenterBloom;
+}
+
+/* Wordmark & Tagline */
+.bloom-typography-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28px;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.bloom-wordmark {
+  font-family: var(--font-sora), var(--font-space-grotesk), system-ui, sans-serif;
+  font-size: clamp(32px, 4.5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+
+  color: #0f172a;
+
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+
+  animation: wordmarkIn 600ms 2200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.bloom-intro--dark .bloom-wordmark {
+  color: #f8fafc;
+}
+
+.bloom-tagline {
+  margin-top: 6px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(10px, 1.3vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  color: rgba(15, 23, 42, 0.55);
+
+  opacity: 0;
+
+  animation: taglineIn 550ms 2400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.bloom-intro--dark .bloom-tagline {
+  color: rgba(248, 250, 252, 0.55);
+}
+
+/* Skip Button */
+.bloom-skip-button {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  z-index: 50;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  padding: 8px 16px;
+  border-radius: 9999px;
+
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.02em;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.bloom-skip-button:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.bloom-skip-button:active {
+  transform: translateY(0);
+}
+
+.bloom-intro--dark .bloom-skip-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.6);
+  color: #cbd5e1;
+}
+
+.bloom-intro--dark .bloom-skip-button:hover {
+  background: rgba(15, 23, 42, 0.9);
+  color: #ffffff;
+}
+
+/* Transition out phase */
+.is-exiting {
+  animation: introOut 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+/* Keyframe Definitions */
+@keyframes introIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes introOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.025);
+    filter: blur(4px);
+  }
+}
+
+@keyframes logoArrival {
+  0% {
+    opacity: 0;
+    transform: scale(0.82) rotate(-6deg);
+    filter: blur(10px) drop-shadow(0 0 0 rgba(37, 99, 235, 0));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0) drop-shadow(0 20px 45px rgba(37, 99, 235, 0.18));
+  }
+}
+
+@keyframes logoLockPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 4 Petals separation (Phase 4: 1.35s–2.0s) & reconvergence (Phase 6: 2.15s–2.65s) */
+@keyframes petalTopBloom {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    /* Phase 2 awaken */
+    transform: translate(2px, -3px) rotate(4deg);
+  }
+  50% {
+    /* Phase 4 bloom outward to upper right */
+    transform: translate(110px, -80px) rotate(32deg) scale(1.08);
+  }
+  75% {
+    /* Phase 6 reconverge inward */
+    transform: translate(18px, -12px) rotate(6deg) scale(0.96);
+  }
+  88%, 100% {
+    /* Locked in place */
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes petalLeftBloom {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(-3px, 2px) rotate(-3deg);
+  }
+  50% {
+    /* Phase 4 bloom outward to lower left */
+    transform: translate(-95px, 85px) rotate(-28deg) scale(1.05);
+  }
+  75% {
+    transform: translate(-14px, 12px) rotate(-5deg) scale(0.96);
+  }
+  88%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes petalRightBloom {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(3px, 3px) rotate(3deg);
+  }
+  50% {
+    /* Phase 4 bloom outward to lower right */
+    transform: translate(100px, 90px) rotate(26deg) scale(1.06);
+  }
+  75% {
+    transform: translate(15px, 14px) rotate(4deg) scale(0.96);
+  }
+  88%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes petalCenterBloom {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  20% {
+    transform: translate(-2px, -2px) scale(0.95) rotate(-4deg);
+  }
+  50% {
+    /* Phase 4 bloom outward to upper left */
+    transform: translate(-105px, -70px) scale(0.9) rotate(-30deg);
+  }
+  75% {
+    transform: translate(-12px, -10px) scale(0.96) rotate(-4deg);
+  }
+  88%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes wordmarkIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes taglineIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .bloom-intro,
+  .bloom-mark,
+  .petal,
+  .bloom-wordmark,
+  .bloom-tagline {
+    animation-duration: 500ms !important;
+    animation-delay: 0ms !important;
+    animation-name: simpleFadeIn !important;
+  }
+
+  @keyframes simpleFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

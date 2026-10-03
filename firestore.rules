@@ -1,0 +1,258 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && 
+        (resource == null || !request.resource.data.diff(resource.data).affectedKeys()
+          .hasAny(['xp', 'level', 'currentStreak', 'longestStreak', 'streak']));
+      allow delete: if isOwner(userId);
+    }
+    
+    // User gamification data (server-authoritative)
+    match /users/{userId}/gamification/{docId} {
+      allow read: if isOwner(userId);
+      allow write: if false; // Server-only
+    }
+    
+    // User roadmaps (client-generated; written by onboarding & ChangeTechnologyModal)
+    match /users/{userId}/roadmaps/{roadmapId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // User enrollments
+    match /users/{userId}/enrollments/{roadmapId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User progress
+    match /users/{userId}/progress/{lessonId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User skills mastery
+    match /users/{userId}/skills/{skillId} {
+      allow read: if isOwner(userId);
+      allow write: if false; // Server-only
+    }
+    
+    // User quiz attempts
+    match /users/{userId}/quizAttempts/{id} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User flashcards
+    match /users/{userId}/flashcards/{id} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User notes
+    match /users/{userId}/notes/{id} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User mentor threads
+    match /users/{userId}/mentorThreads/{tid}/messages/{mid} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User project runs
+    match /users/{userId}/projectRuns/{id} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // User achievements
+    match /users/{userId}/achievements/{id} {
+      allow read: if isOwner(userId);
+      allow write: if false; // Server-only
+    }
+    
+    // User activity (subcollection — server-only in the canonical model)
+    match /users/{userId}/activity/{id} {
+      allow read: if isOwner(userId);
+      allow write: if false; // Server-only
+    }
+    
+    // Catalog - public read, server write
+    match /catalog/{fieldId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/fields/{fieldId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/skills/{skillId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/courses/{courseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/courses/{courseId}/lessons/{lessonId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/quizBanks/{lessonId}/questions/{qid} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/projects/{projectId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /catalog/games/{gameId}/levels/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Videos - public read, server write
+    match /videos/{videoId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Syllabi - owner read/write
+    match /syllabi/{id} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.ownerUid == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+    
+    // AI Cache - server only
+    match /aiCache/{hash} {
+      allow read: if false;
+      allow write: if false;
+    }
+    
+    // Leaderboards - public read, server write
+    match /leaderboards/{scope}/entries/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Legacy & User collections for backward compatibility
+
+    // practiceAttempts — used by Practice and Mentor pages
+    match /practiceAttempts/{attemptId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // activity — written by lesson completion, read by progress page
+    match /activity/{actId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /modules/{moduleId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /lessons/{lessonId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /roadmaps/{roadmapId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /roadmapNodes/{nodeId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /resources/{resourceId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /quizzes/{quizId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /quizAttempts/{attemptId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /games/{gameId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /gameSessions/{sessionId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /projectProgress/{progressId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /userProgress/{progressId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /achievements/{achievementId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /userAchievements/{userAchievementId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /streaks/{streakId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /mentorSessions/{sessionId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /savedItems/{savedItemId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    match /notifications/{notificationId} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
