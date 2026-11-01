@@ -1,5 +1,4 @@
 # Bloom — Interactive Engineering Learning Platform
-
 Bloom turns engineering learning into an interactive journey combining personalized roadmaps, lessons, real learning resources, YouTube learning, AI notes, interactive labs, quizzes, engineering games, projects, AI mentor, progress, achievements, and learning analytics.
 
 ## 🌟 Features
