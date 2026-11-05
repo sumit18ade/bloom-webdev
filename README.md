@@ -4,7 +4,6 @@ Bloom turns engineering learning into an interactive journey combining personali
 
 ## 🌟 Features
 
-
 - **Personalized Roadmaps**: AI-generated learning paths tailored to your goals
 - **Interactive Lessons**: Rich content with progress tracking and XP rewards
 - **Real Course Catalog**: Authentic engineering subjects (Python, DSA, ML, Security, etc.)
